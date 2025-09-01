@@ -16,6 +16,9 @@ proc main =
   proc loadCommand(ctx: var CmdPrompt, input: seq[string]) =
     if input.len != 1: return
     let fn = input[0]
+    if not fileExists(fn):
+      echo &"File \"{fn}\" does not exist"
+      return
     let cwd = paths.getCurrentDir().string
     let fullPath = cwd / fn
     let count = root.addWordsFromFile(fullPath)
