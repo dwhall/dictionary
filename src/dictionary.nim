@@ -1,12 +1,10 @@
-import std/[os, paths, sequtils, strformat, strutils]
-
-import cmd
+import std/[os, sequtils, strutils]
 
 const appFolder = "dictionary_en"
 const appDataDir = getEnv("LOCALAPPDATA") / appFolder
 
 type
-  DictNode = ref object
+  DictNode* = ref object
     letters: array['a'..'z', DictNode]
     isWord: bool
 
@@ -40,38 +38,10 @@ proc addWord(node: DictNode, word: string) =
       n = n.letters[c]
   n.isWord = true
 
-proc addWordsFromFile(root: DictNode, fn: string): int =
+proc addWordsFromFile*(root: DictNode, fn: string): int =
   for line in lines(fn):
     let word = line.strip()
     root.addWord(word)
     inc result
-
-proc addWordsFromBuiltinFiles(root: DictNode): int =
-  let cwd = paths.getCurrentDir().string
-  let builtinWordFiles = ["4160offi.cia", "113809of.fic"]
-  for fn in builtinWordFiles:
-    let fullPath = cwd / "resources" / fn
-    let count = root.addWordsFromFile(fullPath)
-    echo &"{count} words added from {fn}"
-    result += count
-
-proc main =
-  var root = DictNode()
-
-  proc loadCommand(ctx: var CmdPrompt, input: seq[string]) =
-    if input.len != 1: return
-    let fn = input[0]
-    let cwd = paths.getCurrentDir().string
-    let fullPath = cwd / fn
-    let count = root.addWordsFromFile(fullPath)
-    echo &"{count}words added from {fn}"
-
-  discard root.addWordsFromBuiltinFiles()
-  let loadCmd = Command(name: "load", desc: "Loads a word file into the dictionary", exeCmd: loadCommand)
-  var prompt = newCmdPrompt(promptString="dict> ", commands=[loadCmd,])
-  prompt.run()
-
-when isMainModule:
-  main()
 
 # TODO: store the dictionary to a file and load it back

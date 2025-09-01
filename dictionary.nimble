@@ -5,7 +5,7 @@ author        = "!!Dean"
 description   = "English word dictionary tools"
 license       = "MIT"
 srcDir        = "src"
-bin           = @["dictionary"]
+bin           = @["main"]
 
 
 # Dependencies
