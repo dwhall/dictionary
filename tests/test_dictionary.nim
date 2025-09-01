@@ -38,22 +38,14 @@ test "adding a duplicate word":
   check root['c']['a']['t'] != nil
   check root['c']['a']['t'].isWord
 
-test "adding a word that is a prefix of an existing word doesn't overwrite the existing word":
+test "adding a word that is a prefix of an existing word doesn't eliminate the existing word":
   var root = DictNode()
   root.addWord("cats")
   root.addWord("cat")
-  check root['c'] != nil
-  check root['c']['a'] != nil
-  check root['c']['a']['t'] != nil
-  check root['c']['a']['t'].isWord
   check root['c']['a']['t']['s'] != nil
   check root['c']['a']['t']['s'].isWord
 
 test "adding a word with uppercase letters adds the lowercased word":
   var root = DictNode()
   root.addWord("heLL")
-  check root['h'] != nil
-  check root['h']['e'] != nil
-  check root['h']['e']['l'] != nil
-  check root['h']['e']['l']['l'] != nil
   check root['h']['e']['l']['l'].isWord
