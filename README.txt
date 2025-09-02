@@ -1,6 +1,6 @@
 # Dictionary
 
-A cli with a suite of English word dictionary tools.
+A CLI with a suite of English word dictionary tools.
 Also: a toy project to help me practice learning Nim.
 
 ## Vision
