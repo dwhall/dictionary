@@ -44,4 +44,15 @@ proc addWordsFromFile*(root: DictNode, fn: string): int =
     root.addWord(word)
     inc result
 
+proc contains*(root: DictNode, word: string): bool =
+  let lowerWord = word.toLower
+  if not all(lowerWord, proc(c:char): bool = c in LowercaseLetters):
+    return false
+  var n = root
+  for c in lowerWord:
+    if n[c] == nil:
+      return false
+    n = n[c]
+  return n.isWord
+
 # TODO: store the dictionary to a file and load it back

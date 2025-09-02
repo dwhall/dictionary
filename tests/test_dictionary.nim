@@ -49,3 +49,14 @@ test "adding a word with uppercase letters adds the lowercased word":
   var root = DictNode()
   root.addWord("heLL")
   check root['h']['e']['l']['l'].isWord
+
+test "looking up a word that exists returns true":
+  var root = DictNode()
+  root.addWord("dog")
+  check root.contains("dog")
+
+test "can use the keyword 'in' to check if a word exists":
+  var root = DictNode()
+  root.addWord("elephant")
+  check "elephant" in root
+  check "tiger" notin root
