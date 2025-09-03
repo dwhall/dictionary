@@ -6,15 +6,13 @@ test "can index into a node's letter list via []":
   var root = DictNode()
   check root['a'] == nil
 
-test "indexing a node with uppercase raises an exception":
+test "indexing a node with uppercase returns nil":
   var root = DictNode()
-  expect IndexDefect:
-    discard root['A']
+  check root['A'] == nil
 
-test "indexing a node with non-letter raises an exception":
+test "indexing a node with non-letter returns nil":
   var root = DictNode()
-  expect IndexDefect:
-    discard root['!']
+  check root['!'] == nil
 
 test "adding one letter word":
   var root = DictNode()
@@ -60,3 +58,11 @@ test "can use the keyword 'in' to check if a word exists":
   root.addWord("elephant")
   check "elephant" in root
   check "tiger" notin root
+
+#test "can serialize a dictionary to a string":
+#  var root = DictNode()
+#  root.addWord("cats")
+#  #root.addWord("car")
+#  #root.addWord("cat")
+#  #root.addWord("catatonic")
+#  echo root.marshal # == "{c d}"  # DWH: nim serialization to JSON?

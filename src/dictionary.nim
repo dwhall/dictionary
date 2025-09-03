@@ -1,17 +1,23 @@
-import std/[os, sequtils, strutils]
+import std/[os, sequtils, strutils, tables]
 
 const appFolder = "dictionary_en"
 const appDataDir = getEnv("LOCALAPPDATA") / appFolder
 
 type
+  LowercaseLetter = 'a'..'z'
   DictNode* = ref object
-    letters: array['a'..'z', DictNode]
+    letters: Table[LowercaseLetter, DictNode]
     isWord: bool
+
+converter toLowercaseLetter*(c: char): LowercaseLetter =
+  LowercaseLetter(c)
 
 proc `[]`(node: DictNode, c: char): DictNode {.inline.} =
   if c notin LowercaseLetters:
-    raise newException(IndexDefect, "Character out of range.  Expecting lowercase.")
-  node.letters[c]
+    return nil
+  if c.toLowercaseLetter notin node.letters:
+    return nil
+  node.letters[c.toLowercaseLetter]
 
 proc `$`(node: DictNode): string =
   if node == nil:
@@ -30,12 +36,10 @@ proc addWord(node: DictNode, word: string) =
     raise newException(ValueError, "Word contains non-letter characters.")
   var n = node
   for c in lowerWord:
-    if n.letters[c] == nil:
+    if c notin n.letters:
       let newNode = DictNode()
       n.letters[c] = newNode
-      n = newNode
-    else:
-      n = n.letters[c]
+    n = n.letters[c]
   n.isWord = true
 
 proc addWordsFromFile*(root: DictNode, fn: string): int =
@@ -55,4 +59,10 @@ proc contains*(root: DictNode, word: string): bool =
     n = n[c]
   return n.isWord
 
-# TODO: store the dictionary to a file and load it back
+#proc marshal*(node: DictNode): string =
+#  $$node
+
+# TODO: store the dictionary to a file via:
+# * serialize the dict to a string
+# * write the string to a file
+# and the reverse
