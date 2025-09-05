@@ -1,8 +1,5 @@
 import std/[os, sequtils, strutils, tables]
 
-const appFolder = "dictionary_en"
-const appDataDir = getEnv("LOCALAPPDATA") / appFolder
-
 type
   LowercaseLetter = 'a'..'z'
   DictNode* = ref object
