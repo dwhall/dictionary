@@ -1,4 +1,4 @@
-import std/[os, sequtils, strutils, tables]
+import std/[sequtils, strutils, sugar, tables]
 
 type
   LowercaseLetter = 'a'..'z'
@@ -8,6 +8,9 @@ type
 
 converter toLowercaseLetter*(c: char): LowercaseLetter =
   LowercaseLetter(c)
+
+func hasOnlyLowercaseLetters(word: string): bool =
+  all(word, (c) => c in LowercaseLetters)
 
 proc `[]`(node: DictNode, c: char): DictNode {.inline.} =
   ## Returns the child node for the given letter, or nil if it doesn't exist.
@@ -20,7 +23,7 @@ proc `[]`(node: DictNode, c: char): DictNode {.inline.} =
 proc addWord(dict: DictNode, word: string) =
   ## Adds a word to the dictionary.
   let lowerWord = word.toLower
-  if not all(lowerWord, proc(c:char): bool = c in LowercaseLetters):
+  if not hasOnlyLowercaseLetters(lowerWord):
     raise newException(ValueError, "Word contains non-letter characters.")
   var n = dict
   for c in lowerWord:
@@ -39,10 +42,10 @@ proc addWordsFromFile*(dict: DictNode, fn: string): int =
     dict.addWord(word)
     inc result
 
-proc contains*(dict: DictNode, word: string): bool =
+func contains*(dict: DictNode, word: string): bool =
   ## Returns true if the word exists in dict.
   let lowerWord = word.toLower
-  if not all(lowerWord, proc(c:char): bool = c in LowercaseLetters):
+  if not hasOnlyLowercaseLetters(lowerWord):
     return false
   var n = dict
   for c in lowerWord:
@@ -51,7 +54,7 @@ proc contains*(dict: DictNode, word: string): bool =
     n = n[c]
   return n.isWord
 
-proc search*(dict: DictNode, pattern: string): seq[string] =
+func search*(dict: DictNode, pattern: string): seq[string] =
   ## Searches the dictionary for words matching the given pattern.
   ## The pattern may include '_' as a wildcard character that matches any letter.
   ## Returns a sequence of matching words.
