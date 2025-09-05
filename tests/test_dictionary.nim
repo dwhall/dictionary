@@ -59,6 +59,48 @@ test "can use the keyword 'in' to check if a word exists":
   check "elephant" in root
   check "tiger" notin root
 
+test "search with a wildcard '_' as first letter works":
+  var root = DictNode()
+  root.addWord("cat")
+  var wordList = root.search("_")
+  check "cat" notin wordList
+  wordList = root.search("_at")
+  check "cat" in wordList
+
+test "search with a wildcard '_' as last letter":
+  var root = DictNode()
+  root.addWord("cat")
+  root.addWord("dog")
+  root.addWord("cartoon")
+  let wordList = root.search("ca_")
+  check "cat" in wordList
+  check "dog" notin wordList
+  check "cartoon" notin wordList
+
+test "search can find more than one word":
+  var root = DictNode()
+  root.addWord("cat")
+  root.addWord("car")
+  root.addWord("cartoon")
+  let wordList = root.search("ca_")
+  check "cat" in wordList
+  check "car" in wordList
+  check "cartoon" notin wordList
+
+test "search with a wildcard '_' in middle position works":
+  var root = DictNode()
+  root.addWord("cat")
+  root.addWord("cot")
+  root.addWord("cut")
+  root.addWord("cart")
+  let wordList = root.search("c_t")
+  check "cat" in wordList
+  check "cot" in wordList
+  check "cut" in wordList
+  check "cart" notin wordList
+  check "catt" notin wordList
+
+
 #test "can serialize a dictionary to a string":
 #  var root = DictNode()
 #  root.addWord("cats")

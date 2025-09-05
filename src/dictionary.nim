@@ -54,4 +54,32 @@ proc contains*(dict: DictNode, word: string): bool =
     n = n[c]
   return n.isWord
 
+proc search*(dict: DictNode, pattern: string): seq[string] =
+  ## Searches the dictionary for words matching the given pattern.
+  ## The pattern may include '_' as a wildcard character that matches any letter.
+  ## Returns a sequence of matching words.
+  var matches: seq[string] = @[]
+  if pattern.len == 0:
+    return
 
+  proc searchHelper(node: DictNode, pattern: string, prefix: string) =
+    if pattern.len == 0:
+      if node.isWord:
+        matches.add(prefix)
+      return
+
+    let firstChar = pattern[0]
+    let restPattern = pattern[1..^1]
+
+    if firstChar == '_':
+      # Try all possible letters for wildcard
+      for c in 'a'..'z':
+        if c in node.letters:
+          searchHelper(node.letters[c], restPattern, prefix & $c)
+    else:
+      # Match exact letter
+      if firstChar in node.letters:
+        searchHelper(node.letters[firstChar], restPattern, prefix & $firstChar)
+
+  searchHelper(dict, pattern.toLower, "")
+  return matches
