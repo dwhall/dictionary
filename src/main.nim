@@ -4,7 +4,7 @@ import dictionary
 
 proc addWordsFromBuiltinFiles(dict: DictNode)
 
-proc main =
+proc main() =
   var dict = DictNode()
   dict.addWordsFromBuiltinFiles()
 
@@ -39,9 +39,13 @@ proc main =
       for word in matches:
         echo word
 
-  let loadCmd = Command(name: "load", desc: "Loads a word file into the dictionary", exeCmd: loadCommand)
-  let searchCmd = Command(name: "search", desc: "Searches for words matching a pattern", exeCmd: searchCommand)
-  var prompt = newCmdPrompt(promptString="dict> ", commands=[loadCmd, searchCmd])
+  let loadCmd = Command(
+    name: "load", desc: "Loads a word file into the dictionary", exeCmd: loadCommand
+  )
+  let searchCmd = Command(
+    name: "search", desc: "Searches for words matching a pattern", exeCmd: searchCommand
+  )
+  var prompt = newCmdPrompt(promptString = "dict> ", commands = [loadCmd, searchCmd])
   prompt.run()
 
 proc addWordsFromBuiltinFiles(dict: DictNode) =

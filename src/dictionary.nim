@@ -1,7 +1,7 @@
 import std/[sequtils, strutils, sugar, tables]
 
 type
-  LowercaseLetter = 'a'..'z'
+  LowercaseLetter = 'a' .. 'z'
   DictNode* = ref object
     letters: Table[LowercaseLetter, DictNode]
     isWord: bool
@@ -67,11 +67,11 @@ func search*(dict: DictNode, pattern: string): seq[string] =
       return
 
     let firstChar = pattern[0]
-    let restPattern = pattern[1..^1]
+    let restPattern = pattern[1 ..^ 1]
 
     if firstChar == '_':
       # Try all possible letters for wildcard
-      for c in 'a'..'z':
+      for c in 'a' .. 'z':
         if c in node.letters:
           searchHelper(node.letters[c], restPattern, prefix & $c)
     else:
