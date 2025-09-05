@@ -25,8 +25,7 @@ proc addWord(dict: DictNode, word: string) =
   var n = dict
   for c in lowerWord:
     if c notin n.letters:
-      let newNode = DictNode()
-      n.letters[c] = newNode
+      n.letters[c] = DictNode()
     n = n.letters[c]
   n.isWord = true
 
