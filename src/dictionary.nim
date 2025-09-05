@@ -59,8 +59,6 @@ func search*(dict: DictNode, pattern: string): seq[string] =
   ## The pattern may include '_' as a wildcard character that matches any letter.
   ## Returns a sequence of matching words.
   var matches: seq[string] = @[]
-  if pattern.len == 0:
-    return
 
   proc searchHelper(node: DictNode, pattern: string, prefix: string) =
     if pattern.len == 0:
@@ -81,5 +79,6 @@ func search*(dict: DictNode, pattern: string): seq[string] =
       if firstChar in node.letters:
         searchHelper(node.letters[firstChar], restPattern, prefix & $firstChar)
 
-  searchHelper(dict, pattern.toLower, "")
+  if pattern.len > 0:
+    searchHelper(dict, pattern.toLower, "")
   return matches

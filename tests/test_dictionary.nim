@@ -100,6 +100,11 @@ test "search with a wildcard '_' in middle position works":
   check "cart" notin wordList
   check "catt" notin wordList
 
+test "search with empty search pattern returns no matches":
+  var root = DictNode()
+  root.addWord("cat")
+  let wordList = root.search("")
+  check wordList.len == 0
 
 #test "can serialize a dictionary to a string":
 #  var root = DictNode()
