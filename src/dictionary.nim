@@ -6,9 +6,6 @@ type
     letters: Table[LowercaseLetter, DictNode]
     isWord: bool
 
-converter toLowercaseLetter*(c: char): LowercaseLetter =
-  LowercaseLetter(c)
-
 func hasOnlyLowercaseLetters(word: string): bool =
   all(word, (c) => c in LowercaseLetters)
 
@@ -16,9 +13,9 @@ proc `[]`(node: DictNode, c: char): DictNode {.inline.} =
   ## Returns the child node for the given letter, or nil if it doesn't exist.
   if c notin LowercaseLetters:
     return nil
-  if c.toLowercaseLetter notin node.letters:
+  if c.LowercaseLetter notin node.letters:
     return nil
-  node.letters[c.toLowercaseLetter]
+  node.letters[c.LowercaseLetter]
 
 proc addWord(dict: DictNode, word: string) =
   ## Adds a word to the dictionary.
