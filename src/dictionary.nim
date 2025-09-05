@@ -21,7 +21,7 @@ proc addWord(dict: DictNode, word: string) =
   ## Adds a word to the dictionary.
   let lowerWord = word.toLower
   if not hasOnlyLowercaseLetters(lowerWord):
-    raise newException(ValueError, "Word contains non-letter characters.")
+    return
   var n = dict
   for c in lowerWord:
     if c notin n.letters:
