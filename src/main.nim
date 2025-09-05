@@ -2,16 +2,16 @@ import std/[os, paths, strformat]
 import cmd
 import dictionary
 
-proc addWordsFromBuiltinFiles(root: DictNode)
+proc addWordsFromBuiltinFiles(dict: DictNode)
 
 proc main =
-  var root = DictNode()
-  root.addWordsFromBuiltinFiles()
+  var dict = DictNode()
+  dict.addWordsFromBuiltinFiles()
 
-  # a closure so that 'root' is captured
+  # a closure so that 'dict' is captured
   proc loadCommand(ctx: var CmdPrompt, input: seq[string]) =
     ## Expects exactly one argument, the filename, in input.
-    ## Loads the words from the file into the dictionary, root.
+    ## Loads the words from the file into the dict.
     if input.len != 1:
       echo "Expected exactly one argument, <filename>"
       return
@@ -21,7 +21,7 @@ proc main =
       return
     let cwd = paths.getCurrentDir().string
     let fullPath = cwd / fn
-    let count = root.addWordsFromFile(fullPath)
+    let count = dict.addWordsFromFile(fullPath)
     echo &"{count}words added from {fn}"
 
   proc searchCommand(ctx: var CmdPrompt, input: seq[string]) =
@@ -31,7 +31,7 @@ proc main =
       echo "Expected exactly one argument, <word pattern>"
       return
     let pattern = input[0]
-    let matches = root.search(pattern)
+    let matches = dict.search(pattern)
     if matches.len == 0:
       echo "No matches found"
     else:
@@ -44,13 +44,13 @@ proc main =
   var prompt = newCmdPrompt(promptString="dict> ", commands=[loadCmd, searchCmd])
   prompt.run()
 
-proc addWordsFromBuiltinFiles(root: DictNode) =
+proc addWordsFromBuiltinFiles(dict: DictNode) =
   echo "Loading built-in word files..."
   let cwd = paths.getCurrentDir().string
   let builtinWordFiles = ["4160offi.cia", "113809of.fic"]
   for fn in builtinWordFiles:
     let fullPath = cwd / "resources" / fn
-    let count = root.addWordsFromFile(fullPath)
+    let count = dict.addWordsFromFile(fullPath)
     echo &"{count} words added from {fn}"
   echo "Ready."
 
