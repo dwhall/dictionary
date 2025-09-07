@@ -7,6 +7,7 @@ proc addWordsFromBuiltinFiles(dict: DictNode)
 proc main() =
   var dict = DictNode()
   dict.addWordsFromBuiltinFiles()
+  echo getOccupiedMem() div (1024*1024), " MB used"
 
   # a closure so that 'dict' is captured
   proc loadCommand(ctx: var CmdPrompt, input: seq[string]) =
