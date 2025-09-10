@@ -106,6 +106,16 @@ test "search with empty search pattern returns no matches":
   let wordList = root.search("")
   check wordList.len == 0
 
+test "search will not give results containing letters already in the pattern":
+  var root = DictNode()
+  root.addWord("call")
+  root.addWord("hall")
+  root.addWord("half")
+  let wordList = root.search("_al_")
+  check "call" notin wordList
+  check "hall" notin wordList
+  check "half" in wordList
+
 #test "can serialize a dictionary to a string":
 #  var root = DictNode()
 #  root.addWord("cats")

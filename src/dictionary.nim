@@ -50,11 +50,18 @@ func contains*(dict: DictNode, word: string): bool =
     n = n[c]
   return n.isWord
 
+func unusedLetters(usedLetters: string): set[char] =
+  result = LowercaseLetters
+  for c in usedLetters:
+    result.excl(c)
+
 func search*(dict: DictNode, pattern: string): seq[string] =
   ## Searches the dictionary for words matching the given pattern.
   ## The pattern may include '_' as a wildcard character that matches any letter.
   ## Returns a sequence of matching words.
   var matches: seq[string] = @[]
+  let searchLetters = unusedLetters(pattern)
+
 
   proc searchHelper(node: DictNode, pattern: string, prefix: string) =
     if pattern.len == 0:
@@ -67,7 +74,7 @@ func search*(dict: DictNode, pattern: string): seq[string] =
 
     if firstChar == '_':
       # Try all possible letters for wildcard
-      for c in 'a' .. 'z':
+      for c in searchLetters:
         if c in node.letters:
           searchHelper(node.letters[c], restPattern, prefix & $c)
     else:
