@@ -62,8 +62,8 @@ func search*(dict: DictNode, pattern: string): seq[string] =
   var matches: seq[string] = @[]
   let searchLetters = unusedLetters(pattern)
 
-
-  proc searchHelper(node: DictNode, pattern: string, prefix: string) =
+  # Closure so that 'matches' and 'searchLetters' are captured
+  proc searchRecursively(node: DictNode, pattern: string, prefix: string) =
     if pattern.len == 0:
       if node.isWord:
         matches.add(prefix)
@@ -76,12 +76,12 @@ func search*(dict: DictNode, pattern: string): seq[string] =
       # Try all possible letters for wildcard
       for c in searchLetters:
         if c in node.letters:
-          searchHelper(node.letters[c], restPattern, prefix & $c)
+          searchRecursively(node.letters[c], restPattern, prefix & $c)
     else:
       # Match exact letter
       if firstChar in node.letters:
-        searchHelper(node.letters[firstChar], restPattern, prefix & $firstChar)
+        searchRecursively(node.letters[firstChar], restPattern, prefix & $firstChar)
 
   if pattern.len > 0:
-    searchHelper(dict, pattern.toLower, "")
+    searchRecursively(dict, pattern.toLower, "")
   return matches
