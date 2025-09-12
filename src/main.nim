@@ -45,7 +45,10 @@ proc main() =
   let searchCmd = Command(
     name: "search", desc: "Searches for words matching a pattern", exeCmd: searchCommand
   )
-  var prompt = newCmdPrompt(promptString = "dict> ", commands = [loadCmd, searchCmd])
+  let sCmd = Command(
+    name: "s", desc: "Searches for words matching a pattern", exeCmd: searchCommand
+  )
+  var prompt = newCmdPrompt(promptString = "dict> ", commands = [loadCmd, searchCmd, sCmd])
   prompt.run()
 
 proc addWordsFromBuiltinFiles(dict: DictNode) =
