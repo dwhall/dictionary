@@ -25,14 +25,13 @@ proc main() =
     let count = dict.addWordsFromFile(fullPath)
     echo &"{count}words added from {fn}"
 
-  proc searchCommand(ctx: var CmdPrompt, input: seq[string]) =
+  proc searchCommand(ctx: var CmdPrompt, args: seq[string]) =
     ## Expects exactly one argument, the word pattern to search for.
     ## Searches the dictionary for matching words.
-    if input.len != 1:
-      echo "Expected exactly one argument, <word pattern>"
+    if args.len <= 2:
+      echo "Expected no more than two arguments: <word pattern> [>lower bound character]"
       return
-    let pattern = input[0]
-    let matches = dict.search(pattern)
+    let matches = dict.search(args)
     if matches.len == 0:
       echo "No matches found"
     else:

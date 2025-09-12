@@ -116,6 +116,16 @@ test "search will not give results containing letters already in the pattern":
   check "hall" notin wordList
   check "half" in wordList
 
+test "search with a lower bound limits the word list":
+  var dict = DictNode()
+  dict.addWord("axe")
+  dict.addWord("bat")
+  dict.addWord("car")
+  let wordList = dict.search(@["___", ">b"])
+  check "axe" notin wordList
+  check "bat" notin wordList
+  check "car" in wordList
+
 #test "can serialize a dictionary to a string":
 #  var dict = DictNode()
 #  dict.addWord("cats")

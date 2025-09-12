@@ -6,6 +6,8 @@ type
     letters: Table[LowercaseLetter, DictNode]
     isWord: bool
 
+func parseSearchArgs(args: seq[string]): Table[string, string]
+
 func hasOnlyLowercaseLetters(word: string): bool =
   all(word, (c) => c in LowercaseLetters)
 
@@ -55,33 +57,61 @@ func unusedLetters(usedLetters: string): set[char] =
   for c in usedLetters:
     result.excl(c)
 
-func search*(dict: DictNode, pattern: string): seq[string] =
+func search*(dict: DictNode, args: seq[string]): seq[string] =
   ## Searches the dictionary for words matching the given pattern.
   ## The pattern may include '_' as a wildcard character that matches any letter.
   ## Returns a sequence of matching words.
   var matches: seq[string] = @[]
-  let searchLetters = unusedLetters(pattern)
+  let searchArgs = parseSearchArgs(args)
+  let pattern = searchArgs["pattern"]
 
-  # Closure so that 'matches' and 'searchLetters' are captured
-  proc searchRecursively(node: DictNode, pattern: string, prefix: string) =
-    if pattern.len == 0:
+  # If a lower bound is specified, limit the search space for the first letter
+  var searchFirstLetters = unusedLetters(pattern)
+  if ">" in searchArgs:
+    let lowerBound = searchArgs[">"][0]
+    if lowerBound in LowercaseLetters:
+      for c in 'a' .. lowerBound:
+        searchFirstLetters.excl(c)
+
+  # Closure so that 'matches', 'pattern' and 'searchFirstLetters' are captured
+  proc searchRecursively(node: DictNode, patternIdx: int, prefix: string) =
+    if patternIdx >= pattern.len:
       if node.isWord:
         matches.add(prefix)
       return
 
-    let firstChar = pattern[0]
-    let restPattern = pattern[1 ..^ 1]
+    let searchLetters =
+      if patternIdx == 0:
+        searchFirstLetters
+      else:
+        unusedLetters(searchArgs["pattern"])
+
+    let firstChar = pattern[patternIdx]
 
     if firstChar == '_':
       # Try all possible letters for wildcard
       for c in searchLetters:
         if c in node.letters:
-          searchRecursively(node.letters[c], restPattern, prefix & $c)
+          searchRecursively(node.letters[c], patternIdx + 1, prefix & $c)
     else:
       # Match exact letter
       if firstChar in node.letters:
-        searchRecursively(node.letters[firstChar], restPattern, prefix & $firstChar)
+        searchRecursively(node.letters[firstChar], patternIdx + 1, prefix & $firstChar)
 
   if pattern.len > 0:
-    searchRecursively(dict, pattern.toLower, "")
+    searchRecursively(dict, 0, "")
   return matches
+
+func search*(dict: DictNode, args: string): seq[string] =
+  search(dict, @[args])
+
+func parseSearchArgs(args: seq[string]): Table[string, string] =
+  ## Returns an args table built from expected patterns.
+  result = initTable[string, string]()
+  result["pattern"] = args[0].strip()
+  for part in args[1 ..^ 1]:
+    let trimmed = part.strip
+    if trimmed[0] == '>':
+      if trimmed.len == 2:
+        result[">"] = trimmed[1 ..^ 1]
+
