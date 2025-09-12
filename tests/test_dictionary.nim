@@ -126,6 +126,14 @@ test "search with a lower bound limits the word list":
   check "bat" notin wordList
   check "car" in wordList
 
+test "search with a lower bound that comes after the first character in the pattern returns an empty result":
+  var dict = DictNode()
+  dict.addWord("axe")
+  dict.addWord("bat")
+  dict.addWord("car")
+  let wordList = dict.search(@["a__", ">b"])
+  check wordList.len == 0
+
 #test "can serialize a dictionary to a string":
 #  var dict = DictNode()
 #  dict.addWord("cats")

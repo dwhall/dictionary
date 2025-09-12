@@ -94,8 +94,9 @@ func search*(dict: DictNode, args: seq[string]): seq[string] =
         if c in node.letters:
           searchRecursively(node.letters[c], patternIdx + 1, prefix & $c)
     else:
+      let firstCharLowerBoundMismatch = ">" in searchArgs and patternIdx == 0 and firstChar notin searchFirstLetters
       # Match exact letter
-      if firstChar in node.letters:
+      if firstChar in node.letters and not firstCharLowerBoundMismatch:
         searchRecursively(node.letters[firstChar], patternIdx + 1, prefix & $firstChar)
 
   if pattern.len > 0:
