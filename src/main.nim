@@ -28,8 +28,8 @@ proc main() =
   proc searchCommand(ctx: var CmdPrompt, args: seq[string]) =
     ## Expects exactly one argument, the word pattern to search for.
     ## Searches the dictionary for matching words.
-    if args.len > 3:
-      echo "Expected no more than three terms: search <word pattern> [>lower bound character]"
+    if args.len > 4:
+      echo "Expected no more than four terms: search <word pattern> [>lower bound character][<upper bound character]"
       return
     let matches = dict.search(args)
     if matches.len == 0:

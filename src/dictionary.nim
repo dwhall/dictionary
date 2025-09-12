@@ -65,12 +65,20 @@ func search*(dict: DictNode, args: seq[string]): seq[string] =
   let searchArgs = parseSearchArgs(args)
   let pattern = searchArgs["pattern"]
 
-  # If a lower bound is specified, limit the search space for the first letter
   var searchFirstLetters = unusedLetters(pattern)
+
+  # If a lower bound is specified, limit the search space for the first letter
   if ">" in searchArgs:
     let lowerBound = searchArgs[">"][0]
     if lowerBound in LowercaseLetters:
       for c in 'a' .. lowerBound:
+        searchFirstLetters.excl(c)
+
+  # If an upper bound is specified, limit the search space for the first letter
+  if "<" in searchArgs:
+    let upperBound = searchArgs["<"][0]
+    if upperBound in LowercaseLetters:
+      for c in upperBound .. 'z':
         searchFirstLetters.excl(c)
 
   # Closure so that 'matches', 'pattern' and 'searchFirstLetters' are captured
@@ -94,9 +102,9 @@ func search*(dict: DictNode, args: seq[string]): seq[string] =
         if c in node.letters:
           searchRecursively(node.letters[c], patternIdx + 1, prefix & $c)
     else:
-      let firstCharLowerBoundMismatch = ">" in searchArgs and patternIdx == 0 and firstChar notin searchFirstLetters
+      let firstCharBoundMismatch = ("<" in searchArgs or ">" in searchArgs) and patternIdx == 0 and firstChar notin searchFirstLetters
       # Match exact letter
-      if firstChar in node.letters and not firstCharLowerBoundMismatch:
+      if firstChar in node.letters and not firstCharBoundMismatch:
         searchRecursively(node.letters[firstChar], patternIdx + 1, prefix & $firstChar)
 
   if pattern.len > 0:
@@ -115,4 +123,7 @@ func parseSearchArgs(args: seq[string]): Table[string, string] =
     if trimmed[0] == '>':
       if trimmed.len == 2:
         result[">"] = trimmed[1 ..^ 1]
+    if trimmed[0] == '<':
+      if trimmed.len == 2:
+        result["<"] = trimmed[1 ..^ 1]
 

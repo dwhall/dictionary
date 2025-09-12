@@ -134,6 +134,34 @@ test "search with a lower bound that comes after the first character in the patt
   let wordList = dict.search(@["a__", ">b"])
   check wordList.len == 0
 
+test "search with an upper bound limits the word list":
+  var dict = DictNode()
+  dict.addWord("axe")
+  dict.addWord("bat")
+  dict.addWord("car")
+  let wordList = dict.search(@["___", "<b"])
+  check "axe" in wordList
+  check "bat" notin wordList
+  check "car" notin wordList
+
+test "search with an upper bound that comes before the first character in the pattern returns an empty result":
+  var dict = DictNode()
+  dict.addWord("axe")
+  dict.addWord("bat")
+  dict.addWord("car")
+  let wordList = dict.search(@["c__", "<b"])
+  check wordList.len == 0
+
+test "search with an upper and lower bound limits the word list":
+  var dict = DictNode()
+  dict.addWord("axe")
+  dict.addWord("bat")
+  dict.addWord("car")
+  let wordList = dict.search(@["___", ">a", "<c"])
+  check "axe" notin wordList
+  check "bat" in wordList
+  check "car" notin wordList
+
 #test "can serialize a dictionary to a string":
 #  var dict = DictNode()
 #  dict.addWord("cats")
