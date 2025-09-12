@@ -7,7 +7,7 @@ proc addWordsFromBuiltinFiles(dict: DictNode)
 proc main() =
   var dict = DictNode()
   dict.addWordsFromBuiltinFiles()
-  echo getOccupiedMem() div (1024*1024), " MB used"
+  echo getOccupiedMem() div (1024 * 1024), " MB used"
 
   # a closure so that 'dict' is captured
   proc loadCommand(ctx: var CmdPrompt, input: seq[string]) =
@@ -48,7 +48,8 @@ proc main() =
   let sCmd = Command(
     name: "s", desc: "Searches for words matching a pattern", exeCmd: searchCommand
   )
-  var prompt = newCmdPrompt(promptString = "dict> ", commands = [loadCmd, searchCmd, sCmd])
+  var prompt =
+    newCmdPrompt(promptString = "dict> ", commands = [loadCmd, searchCmd, sCmd])
   prompt.run()
 
 proc addWordsFromBuiltinFiles(dict: DictNode) =

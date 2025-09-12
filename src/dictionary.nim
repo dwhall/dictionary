@@ -102,7 +102,9 @@ func search*(dict: DictNode, args: seq[string]): seq[string] =
         if c in node.letters:
           searchRecursively(node.letters[c], patternIdx + 1, prefix & $c)
     else:
-      let firstCharBoundMismatch = ("<" in searchArgs or ">" in searchArgs) and patternIdx == 0 and firstChar notin searchFirstLetters
+      let firstCharBoundMismatch =
+        ("<" in searchArgs or ">" in searchArgs) and patternIdx == 0 and
+        firstChar notin searchFirstLetters
       # Match exact letter
       if firstChar in node.letters and not firstCharBoundMismatch:
         searchRecursively(node.letters[firstChar], patternIdx + 1, prefix & $firstChar)
@@ -126,4 +128,3 @@ func parseSearchArgs(args: seq[string]): Table[string, string] =
     if trimmed[0] == '<':
       if trimmed.len == 2:
         result["<"] = trimmed[1 ..^ 1]
-
