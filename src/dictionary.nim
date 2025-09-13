@@ -125,6 +125,8 @@ func parseSearchArgs(args: seq[string]): Table[string, string] =
   result["pattern"] = args[0].strip()
   for part in args[1 ..^ 1]:
     let trimmed = part.strip
+    if trimmed.len == 0:
+      continue
     if trimmed[0] == '>':
       if trimmed.len == 2:
         result[">"] = trimmed[1 ..^ 1]

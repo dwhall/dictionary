@@ -174,6 +174,12 @@ test "search with certain letters restricted for all positions":
   check "rat" in wordList
   check "hat" in wordList
 
+test "search with a trailing space should not cause an exception":
+  var dict = DictNode()
+  dict.addWord("cat")
+  let wordList = dict.search(@["_at", " "])
+  check wordList.len == 1
+
 #test "can serialize a dictionary to a string":
 #  var dict = DictNode()
 #  dict.addWord("cats")
