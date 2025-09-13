@@ -52,9 +52,11 @@ func contains*(dict: DictNode, word: string): bool =
     n = n[c]
   return n.isWord
 
-func unusedLetters(usedLetters: string): set[char] =
+func availableLetters(usedLetters: string, excludedLetters:string): set[char] =
   result = LowercaseLetters
   for c in usedLetters:
+    result.excl(c)
+  for c in excludedLetters:
     result.excl(c)
 
 func search*(dict: DictNode, args: seq[string]): seq[string] =
@@ -64,8 +66,9 @@ func search*(dict: DictNode, args: seq[string]): seq[string] =
   var matches: seq[string] = @[]
   let searchArgs = parseSearchArgs(args)
   let pattern = searchArgs["pattern"]
+  let excludedLetters = if "-" in searchArgs: searchArgs["-"] else: ""
 
-  var searchFirstLetters = unusedLetters(pattern)
+  var searchFirstLetters = availableLetters(pattern, excludedLetters)
 
   # If a lower bound is specified, limit the search space for the first letter
   if ">" in searchArgs:
@@ -92,7 +95,7 @@ func search*(dict: DictNode, args: seq[string]): seq[string] =
       if patternIdx == 0:
         searchFirstLetters
       else:
-        unusedLetters(searchArgs["pattern"])
+        availableLetters(pattern, excludedLetters)
 
     let firstChar = pattern[patternIdx]
 
@@ -128,3 +131,5 @@ func parseSearchArgs(args: seq[string]): Table[string, string] =
     if trimmed[0] == '<':
       if trimmed.len == 2:
         result["<"] = trimmed[1 ..^ 1]
+    if trimmed[0] == '-':
+      result["-"] = trimmed[1 ..^ 1]

@@ -162,6 +162,18 @@ test "search with an upper and lower bound limits the word list":
   check "bat" in wordList
   check "car" notin wordList
 
+test "search with certain letters restricted for all positions":
+  var dict = DictNode()
+  dict.addWord("cat")
+  dict.addWord("bat")
+  dict.addWord("rat")
+  dict.addWord("hat")
+  let wordList = dict.search(@["___", "-bcz"])
+  check "cat" notin wordList
+  check "bat" notin wordList
+  check "rat" in wordList
+  check "hat" in wordList
+
 #test "can serialize a dictionary to a string":
 #  var dict = DictNode()
 #  dict.addWord("cats")
